@@ -11,60 +11,55 @@ class mainService {
 
     async MainServiceFunction() {
 
-        const response_data = await this.repository.RepositoryFunction()
+        const {data} = await this.repository.GetData()
 
-        if(response_data) throw new NotFoundError("Sorry no data found");
+        if(data.length === 0 || !data) throw new NotFoundError("Sorry no data found");
 
         const payload = {
             message:"success", 
             status:"404" ,
-            response_data, 
+            response_data:data, 
         };
 
         return FormateData(payload)
 
     };
 
-    async GetData(api_data) {
+    async GetData() {
 
-        const response_data = await this.repository.GetData(api_data);
+        const {data} = await this.repository.GetData();
 
-        if(response_data.length === 0) throw new NotFoundError("Sorry no data found");
+        if(data.length === 0 || !data) throw new NotFoundError("Sorry no data found");
 
         const payload = {
             message:"Data successfully found", 
-            status:"404" ,
-            response_data, 
+            status:"404",
+            response_data:data, 
         };
 
-        const data = FormateData(payload)
-
-        return data;
+        return FormateData(payload);
 
     };
 
     async GetDataById(api_data) {
 
-        const response_data = await this.repository.GetDataById(api_data)
+        const {data} = await this.repository.GetDataById(api_data)
 
-        if(!response_data) throw new NotFoundError("Sorry no data found");
+        if(data.length === 0 || !data) throw new NotFoundError("Sorry no data found");
 
         const payload = {
             message:"Data successfully found", 
             status:"404" ,
-            response_data, 
+            response_data:data, 
         };
 
-        const data = FormateData(payload)
-
-        return data;
+        return FormateData(payload);
 
     };
 
     async PostData(api_data) {
 
         const response_data = await this.repository.PostData(api_data)
-        console.log(response_data);
 
         if(!response_data) throw new NotFoundError("Sorry unable to post data");
 
@@ -82,19 +77,19 @@ class mainService {
 
     async UpdateData(api_data) {
 
-        const response_data = await this.repository.UpdateData(api_data)
+        const update_response = await this.repository.UpdateData(api_data)
 
-        if(!response_data) throw new NotFoundError("Sorry unable to update data");
+        if(update_response !== "success") throw new NotFoundError("Sorry unable to update data");
+
+        const {data} = await this.repository.GetDataById(api_data)
 
         const payload = {
             message:"Data successfully updated", 
             status:"404" ,
-            response_data, 
+            response_data:data, 
         };
 
-        const data = FormateData(payload)
-
-        return data;
+        return FormateData(payload);
 
     };
 

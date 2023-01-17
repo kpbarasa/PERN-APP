@@ -18,7 +18,7 @@ class BaseError extends Error {
 
 // 500 MongoDb connection  Error
 class PostgraceBDError extends BaseError {
-  constructor(description = "Postgrace DB error") {
+  constructor(description = "Postgrace error") {
     super(
       "api internal server error",
       STATUS_CODES.INTERNAL_ERROR,

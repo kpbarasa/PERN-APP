@@ -16,34 +16,33 @@ Sentry.init({
   tracesSampleRate: 1.0,
 });
 
-module.exports= (app) =>{
-    
-    // Catch all errors format and report to error logger.
-    app.use((error, req, res, next) => {
+module.exports = (app) => {
 
-        let reportError = true;
-        console.log({error});
+  // Catch all errors format and report to error logger.
+  app.use((error, req, res, next) => {
 
-        // Skip common known errors.
-        [NotFoundError, ValidationError, AuthorizeError].forEach(typeOfError => {
+    let reportError = true;
 
-          if(error instanceof typeOfError) { // Check if error are service errors.
+    // Skip common known errors.
+    [NotFoundError, ValidationError, AuthorizeError].forEach(typeOfError => {
 
-            reportError = false;
+      if (error instanceof typeOfError) { // Check if error are service errors.
 
-          }
-          
-        });
+        reportError = false;
 
-        if(reportError){
-          Sentry.captureException(error)
-        }
-
-        const statusCode = error.statusCode || 500;
-        const data = error.data || error.message;
-
-        return res.status(statusCode).json(data);
+      }
 
     });
+
+    if (reportError) {
+      Sentry.captureException(error)
+    }
+
+    const statusCode = error.statusCode || 500;
+    const data = error.data || error.message;
+
+    return res.status(statusCode).json({statusCode, error:data});
+
+  });
 
 }
